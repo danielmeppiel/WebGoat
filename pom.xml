@@ -117,7 +117,6 @@
         <java.version>17</java.version>
         <webgoat.port>8080</webgoat.port>
         <webwolf.port>9090</webwolf.port>
-
         <!-- Shared properties with plugins and version numbers across submodules-->
         <asciidoctorj.version>2.5.3</asciidoctorj.version>
         <bootstrap.version>3.3.7</bootstrap.version>
