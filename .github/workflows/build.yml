@@ -32,7 +32,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -41,6 +41,12 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           architecture: x64
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
         uses: actions/cache@v3.0.5
         with:
@@ -48,10 +54,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
       - name: Build with Maven
-        run: mvn --no-transfer-progress package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn --no-transfer-progress package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=danielmeppiel-webgoat
 
   build:
-    if: github.repository == 'WebGoat/WebGoat' && github.event_name == 'push'
+    if: github.repository == 'danielmeppiel/WebGoat' && github.event_name == 'push'
     runs-on: ubuntu-latest
     name: "Branch build"
     steps:
@@ -62,6 +71,12 @@ jobs:
               distribution: 'temurin'
               java-version: 17
               architecture: x64
+        - name: Cache SonarCloud packages
+          uses: actions/cache@v1
+          with:
+            path: ~/.sonar/cache
+            key: ${{ runner.os }}-sonar
+            restore-keys: ${{ runner.os }}-sonar
         - name: Cache Maven packages
           uses: actions/cache@v3.0.5
           with:
@@ -69,4 +84,7 @@ jobs:
               key: ubuntu-latest-m2-${{ hashFiles('**/pom.xml') }}
               restore-keys: ubuntu-latest-m2-
         - name: Test with Maven
-          run: mvn --no-transfer-progress verify
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          run: mvn --no-transfer-progress verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=danielmeppiel-webgoat
