@@ -58,8 +58,8 @@ public class Assignment5 extends AssignmentEndpoint {
         try (var connection = dataSource.getConnection()) {
             String query = "select password from challenge_users where userid = ? and password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, user); // Will be properly escaped
-            statement.setString(2, pass);
+            statement.setString(1, username_login); // Will be properly escaped
+            statement.setString(2, password_login);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
