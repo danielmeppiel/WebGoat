@@ -145,6 +145,9 @@
         <xml-resolver.version>1.2</xml-resolver.version>
         <xstream.version>1.4.5</xstream.version> <!-- do not update necessary for lesson -->
         <zxcvbn.version>1.5.2</zxcvbn.version>
+        
+        <sonar.organization>danielmeppiel</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencyManagement>
@@ -571,31 +574,6 @@
                                 <source>src/it/java</source>
                             </sources>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <systemPropertyVariables>
-                        <logback.configurationFile>${basedir}/src/test/resources/logback-test.xml</logback.configurationFile>
-                    </systemPropertyVariables>
-                    <argLine>-Xmx512m -Dwebgoatport=${webgoat.port} -Dwebwolfport=${webwolf.port}</argLine>
-                    <includes>**/*IntegrationTest.java</includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
